@@ -1,4 +1,5 @@
-# CODE: BENJAMIN HUANG
+#CODE: BENJAMIN HUANG (PRIMARY), VIKRAM GILL
+
 import sc2
 from sc2.bot_ai import BotAI
 from sc2.main import run_game
