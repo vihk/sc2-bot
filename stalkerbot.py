@@ -53,24 +53,24 @@ class Parting(BotAI):
     def __init__(self):
         super().__init__()
         self.order_number = 0
+        self.structuresDict = {
+            UnitTypeId.GATEWAY: UnitTypeId.PYLON,
+            UnitTypeId.CYBERNETICSCORE: UnitTypeId.GATEWAY,
+            UnitTypeId.TWILIGHTCOUNCIL: UnitTypeId.CYBERNETICSCORE, 
+            UnitTypeId.ROBOTICSFACILITY: UnitTypeId.CYBERNETICSCORE
+        }
+    def has_tech_unlocked(self, unit):
+        return len(self.structures(self.structuresDict[unit]).ready) > 0
     async def on_step(self, iteration: int):
         current_order = build_order[self.order_number]
         print('On order: ' + str(self.order_number))
         #Determine if tesch tree has been progressed enough to build new tech
         #(without this, the bot will attempt to build a building even if it's impossible. There's no pre-written function to determine tech tree unlocks, only affordability)
-        def has_tech_unlocked(unit):
-            structuresDict = {
-                UnitTypeId.GATEWAY: UnitTypeId.PYLON,
-                UnitTypeId.CYBERNETICSCORE: UnitTypeId.GATEWAY,
-                UnitTypeId.TWILIGHTCOUNCIL: UnitTypeId.CYBERNETICSCORE, 
-                UnitTypeId.ROBOTICSFACILITY: UnitTypeId.CYBERNETICSCORE,
-            }
-            return len(self.structures(structuresDict[unit]).ready) > 0
 
         #Testing Tools:
         try:
             print(current_order)
-            print(has_tech_unlocked(current_order[1]))
+            print(self.has_tech_unlocked(current_order[1]))
         except:
             None
 
@@ -118,7 +118,7 @@ class Parting(BotAI):
                             if act:
                                 self.order_number += 1
                                 break
-                elif has_tech_unlocked(current_order[1]):
+                elif self.has_tech_unlocked(current_order[1]):
                     #print(f"Attempting to build {build_order[0][1]}")
                     act = await self.build(current_order[1], near=pylon)
                     print(act)
