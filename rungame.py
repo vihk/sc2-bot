@@ -9,7 +9,7 @@ from sc2.data import Race, Difficulty
 from stalkerbot import Parting
 from dummybot import DummyBot
 run_game(
-    sc2.maps.get("AbiogenesisLE"),
-    [Bot(Race.Protoss, DummyBot()), Computer(Race.Protoss, Difficulty.Medium)],
-    realtime=False,
+    sc2.maps.get("AcidPlantLE"),
+    [Bot(Race.Protoss, Parting()), Bot(Race.Protoss, DummyBot())],
+    realtime=False
 ) 
