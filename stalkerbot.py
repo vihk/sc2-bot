@@ -49,12 +49,13 @@ build_order = [
                 [53, UnitTypeId.ASSIMILATOR]
                 #benchmark 5:11, 11 stalkers
                 ]
-order_number = list(range(0,len(build_order)))
 class Parting(BotAI): 
+    def __init__(self):
+        super().__init__()
+        self.order_number = 0
     async def on_step(self, iteration: int):
-        number = False
-        current_order = build_order[order_number[0]]
-        print(order_number[0])
+        current_order = build_order[self.order_number]
+        print(self.order_number)
         print(self.structures(UnitTypeId.PYLON).amount)
         #Determine if tesch tree has been progressed enough to build new tech
         #(without this, the bot will attempt to build a building even if it's impossible. There's no pre-written function to determine tech tree unlocks, only affordability)
@@ -88,7 +89,7 @@ class Parting(BotAI):
             print('REACHED HERE. 1')
         #Infrastructure/Tech/Units to be built in Build Order list
         if (
-            len(build_order) >= order_number[0]
+            len(build_order) >= self.order_number
             and self.supply_used <= current_order[0]
         ):
             print('REACHED HERE 2')
@@ -99,11 +100,11 @@ class Parting(BotAI):
                     #print(f"Attempting to build pylon")
                     act = await self.build(UnitTypeId.PYLON, near=nexus.position.towards(self.game_info.map_center, 9))
                     if act:
-                        number = True
+                        self.order_number += 1
                 elif current_order[1] == UnitTypeId.NEXUS:
                     #print(f"Attempting to build nexus")
                     await self.expand_now()
-                    number = True
+                    self.order_number += 1
                 elif current_order[1] == UnitTypeId.ASSIMILATOR:
                     #print(f"Attempting to build assimilator")
                     vgs = self.vespene_geyser.closer_than(15, nexus)
@@ -116,14 +117,14 @@ class Parting(BotAI):
                             worker.stop(queue=True)
                             print(act)
                             if act:
-                                number = True
+                                self.order_number += 1
                                 break
                 elif has_tech_unlocked(current_order[1]):
                     #print(f"Attempting to build {build_order[0][1]}")
                     act = await self.build(current_order[1], near=pylon)
                     print(act)
                     if act:
-                        number = True
+                        self.order_number += 1
                 #If not a building next in list, must be unit, therefore build unit
                 else:
                     #print(f"Attempting to build unit")
@@ -135,21 +136,21 @@ class Parting(BotAI):
                             abilities = await self.get_available_abilities(warpgate)
                             act = warpgate.warp_in(UnitTypeId.STALKER, placement)
                             if act:
-                                number = True
+                                self.order_number += 1
                         elif len(self.structures(UnitTypeId.GATEWAY).ready) > 0:
                             act = self.structures(UnitTypeId.GATEWAY).ready.random.train(current_order[1])
                             if act:
-                                number = True
+                                self.order_number += 1
                         else:
                             None
                     elif current_order[1] in robounits and len(self.structures(UnitTypeId.ROBOTICSFACILITY).ready) > 0:
                         act = self.structures(UnitTypeId.ROBOTICSFACILITY).ready.random.train(current_order[1])
                         if act:
-                            number = True
+                            self.order_number += 1
                     elif current_order[1] in robounits and len(self.structures(UnitTypeId.STARGATE).ready) > 0:
                         act = self.structures(UnitTypeId.STARGATE).ready.random.train(current_order[1])
                         if act:
-                            number = True
+                            self.order_number += 1
             #Use unit/building abilities and start upgrades
             elif len(current_order) == 3 and len(self.structures(current_order[2]).ready) > 0:
                 #Use Chronoboost
@@ -162,12 +163,9 @@ class Parting(BotAI):
                     if nexus.energy >= 50:
                         act = nexus(current_order[1], target)
                         if act:
-                            number = True
+                            self.order_number += 1
                 #Upgrades
                 elif current_order[1] in UpgradeId and self.can_afford(current_order[1]):
                     act = target.research(current_order[1])
                     if act:
-                        number = True
-            if number == True:
-                order_number.pop(0)
-                number = False
+                        self.order_number += 1
