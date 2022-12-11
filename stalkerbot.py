@@ -55,8 +55,7 @@ class Parting(BotAI):
         self.order_number = 0
     async def on_step(self, iteration: int):
         current_order = build_order[self.order_number]
-        print(self.order_number)
-        print(self.structures(UnitTypeId.PYLON).amount)
+        print('On order: ' + str(self.order_number))
         #Determine if tesch tree has been progressed enough to build new tech
         #(without this, the bot will attempt to build a building even if it's impossible. There's no pre-written function to determine tech tree unlocks, only affordability)
         def has_tech_unlocked(unit):

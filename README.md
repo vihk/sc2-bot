@@ -1,5 +1,3 @@
 # sc2-bot
 
-# Starcraft II bot. Built on top of python-sc2
-
-# added comment
+# Starcraft II bot. Built on top of burny-sc2
