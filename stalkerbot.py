@@ -66,7 +66,6 @@ class Parting(BotAI):
         print('On order: ' + str(self.order_number))
         #Determine if tesch tree has been progressed enough to build new tech
         #(without this, the bot will attempt to build a building even if it's impossible. There's no pre-written function to determine tech tree unlocks, only affordability)
-
         #Testing Tools:
         try:
             print(current_order)
@@ -79,8 +78,6 @@ class Parting(BotAI):
 
         #random nexus selection (the loops go so fast you can just assume it's selecting all nexi)
         nexus = self.townhalls.ready.random
-
-
         print(self.townhalls.ready)
         #Probe Production until user defined cap
         if self.can_afford(UnitTypeId.PROBE) and nexus.is_idle and self.supply_workers < 41:
